@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E5E5E5">
+<meta name="color-scheme" content="light">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>kakomon-trend</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+:root{--bg:#E5E5E5;--accent:#A499C9;--card:#F5F3FA;--ink:#222;--sub:#666;--danger:#A32D2D;--line:#CFCBDA;--w:560px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGothic","Meiryo",system-ui,sans-serif;font-weight:300;font-size:15px;line-height:1.5;letter-spacing:.02em;min-height:100vh;min-height:100dvh}
+#app{max-width:var(--w);margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(110px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+button{background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ic{display:inline-flex;align-items:center;justify-content:center;flex:none}
+
+/* 見出し */
+.hd{position:relative;text-align:center;margin:4px 0 14px;min-height:42px;padding:0 48px}
+.h{font-size:19px;letter-spacing:.1em;line-height:1.35;word-break:break-word}
+.s{font-size:12px;color:var(--sub);font-weight:400;letter-spacing:.02em}
+.pill{position:absolute;right:0;top:2px;width:42px;height:34px;border:1px solid var(--ink);border-radius:17px;display:flex;align-items:center;justify-content:center}
+.fab{position:fixed;right:max(16px,calc((100vw - var(--w))/2 + 16px));bottom:calc(18px + env(safe-area-inset-bottom));width:54px;height:54px;border:1px solid var(--ink);border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;z-index:5}
+
+/* ボタンとカード */
+.btn{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:10px 16px;border:1px solid var(--ink);border-radius:14px;background:var(--card);margin-bottom:8px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.btn.tall{min-height:72px}
+.btn.block{display:block}
+.n{font-size:16px;letter-spacing:.06em;word-break:break-word}
+.n.big{font-size:18px}
+.r{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13px;color:#444;font-weight:400;flex:none;padding-left:8px}
+.th{width:40px;height:40px;border-radius:10px;object-fit:cover;flex:none;display:block;background:#fff}
+.ico{width:40px;height:40px;border-radius:10px;flex:none;background:var(--accent);border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:18px}
+.empty{text-align:center;color:var(--sub);margin:36px 0;font-weight:400;font-size:14px}
+.hint{text-align:center;color:var(--sub);font-size:12px;font-weight:400;margin:14px 0}
+
+/* タブとチップ */
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{flex:1;padding:11px 0;border:1px solid var(--ink);border-radius:4px;letter-spacing:.14em;text-align:center}
+.tabs .on{background:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border:1px solid var(--ink);border-radius:999px;font-size:14px;text-align:left}
+.chip.on{background:var(--accent)}
+.chip.big{min-width:46px;justify-content:center}
+.chip.sm{padding:5px 11px;font-size:13px}
+.chip.outl{background:none}
+.chip .cu{font-size:11px;color:#444;border-left:1px solid var(--ink);padding-left:6px;font-weight:400}
+.chip.sel{padding:0}
+.chipTxt{padding:6px 4px 6px 13px;font-size:13px}
+.chipX{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;flex:none}
+
+/* 頻度順 */
+.btn.rk{display:block;padding:10px 16px 12px}
+.rkTop{display:flex;align-items:center;gap:8px}
+.rn{width:20px;font-size:13px;color:var(--sub);font-weight:400;flex:none}
+.rkTop .n{flex:1;text-align:left}
+.bar{height:6px;border-radius:3px;background:#E1DFEA;margin:8px 0 0 28px}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+
+/* 問題のカードと詳細 */
+.cardTop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tg{display:inline-flex;align-items:center;font-size:12px;padding:2px 10px;border-radius:999px;background:var(--accent);font-weight:400}
+.tg.rm{padding:2px 2px 2px 10px}
+.tg.rm .chipX{width:22px;height:22px}
+.grp{border:1px solid var(--ink);border-radius:14px;background:var(--card);overflow:hidden;margin-bottom:16px}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px;border-top:.5px solid var(--line)}
+.kv:first-child{border-top:0}
+.kv.col{display:block}
+.kv.col .tags{margin-top:6px}
+.k{font-size:12px;color:var(--sub);font-weight:400;flex:none}
+.v{text-align:right}
+.lb{font-size:12px;color:var(--sub);font-weight:400;margin:16px 0 6px 4px}
+.imgwrap{display:block;width:100%;border:1px solid var(--ink);border-radius:14px;background:var(--card);padding:6px;margin-bottom:10px}
+.pimg{display:block;width:100%;height:auto;border-radius:8px;background:#fff;min-height:80px}
+
+/* 画像の拡大表示 */
+.viewer{position:fixed;inset:0;background:#1b1b1b;z-index:60;display:flex;flex-direction:column}
+.vbar{display:flex;align-items:center;gap:6px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;color:#fff}
+.vb{width:42px;height:38px;border:1px solid #fff;border-radius:19px;display:inline-flex;align-items:center;justify-content:center;color:#fff}
+.vcount{font-size:13px;padding:0 6px;font-weight:400}
+.grow{flex:1}
+.vbox{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom;padding:0 8px calc(16px + env(safe-area-inset-bottom))}
+.vbox img{display:block;height:auto;background:#fff;margin:0 auto}
+.viewer :focus-visible{outline-color:#fff}
+
+/* 入力フォーム */
+.field{display:block;width:100%;height:48px;padding:0 14px;border:1px solid var(--ink);border-radius:14px;background:var(--card);font-weight:300}
+textarea.field{height:auto;padding:12px 14px;line-height:1.6}
+.err{color:var(--danger);font-size:13px;font-weight:400;margin-top:12px}
+.bt{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 12px;border:1px solid var(--ink);border-radius:14px;text-align:center;letter-spacing:.2em;background:none}
+.bt.pri{background:var(--accent)}
+.bt.out{letter-spacing:.06em}
+.bt.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.danger-t{color:var(--danger)}
+.bt.gap{margin-top:16px}
+.two{display:flex;gap:10px}
+.two>div{flex:1;min-width:0}
+.addrow{display:flex;gap:8px}
+.addbtn{width:48px;height:48px;border:1px solid var(--ink);border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--card)}
+.pad{padding:4px 4px 8px}
+.center{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px}
+.ctr{text-align:center}
+.picker{width:104px;height:104px;border:1px solid var(--ink);border-radius:24px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow:hidden}
+.picker img{width:100%;height:100%;object-fit:cover}
+.link{font-size:13px;text-decoration:underline;color:var(--sub);font-weight:400}
+.acc{border:1px solid var(--ink);border-radius:14px;background:var(--card);margin-bottom:8px;overflow:hidden}
+.accHead{display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;min-height:48px}
+.inacc{padding:0 12px 12px;margin:0}
+.searchBox{display:flex;align-items:center;gap:8px;height:46px;padding:0 14px;border:1px solid var(--ink);border-radius:14px;background:var(--card);margin-bottom:6px}
+.searchBox input{flex:1;min-width:0;border:0;background:none;height:100%;outline:0}
+.searchBox:focus-within{outline:2px solid var(--ink);outline-offset:2px}
+.thumbs{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-top:4px}
+.thumb{position:relative;width:76px;height:100px}
+.thumb img{width:100%;height:100%;object-fit:cover;border:1px solid var(--ink);border-radius:8px;background:#fff}
+.thumbX{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--ink);background:var(--card);display:flex;align-items:center;justify-content:center}
+.thumbAdd{width:76px;height:100px;border:1px solid var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center}
+
+/* ダイアログとメニュー */
+.dim{position:fixed;inset:0;background:rgba(0,0,0,.32);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.dim.tr{align-items:flex-start;justify-content:flex-end;padding:calc(56px + env(safe-area-inset-top)) max(16px,calc((100vw - var(--w))/2 + 16px)) 0 16px}
+.dlg{width:100%;max-width:420px;max-height:90vh;max-height:90dvh;overflow:auto;border:1px solid var(--ink);border-radius:18px;background:var(--card);padding:18px 16px}
+.dlg.menu{max-width:340px;padding:6px 0}
+.dim.tr .dlg.menu{max-width:240px}
+.dt{font-size:16px;margin-bottom:8px;letter-spacing:.04em}
+.dt.sm{font-size:12px;color:var(--sub);padding:8px 16px 4px;margin:0;font-weight:400}
+.db{font-size:13px;line-height:1.7;color:#444;font-weight:400;margin-bottom:16px}
+.row2{display:flex;gap:8px}
+.row2 .bt{letter-spacing:.06em}
+.menuList{display:flex;flex-direction:column}
+.mi{display:flex;align-items:center;gap:12px;padding:13px 16px;text-align:left;width:100%}
+.mi+.mi{border-top:.5px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:400;z-index:70;max-width:90vw;text-align:center}
+@media (min-width:700px){#app{padding-top:28px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="text-align:center;margin:40px 16px">このアプリを使うには、JavaScriptを有効にしてください。</p></noscript>
+<script src="master.js"></script>
+<script src="core.js"></script>
+<script src="views.js"></script>
+<script src="forms.js"></script>
+</body>
+</html>

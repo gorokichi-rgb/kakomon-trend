@@ -1,0 +1,16 @@
+{
+  "name": "kakomon-trend",
+  "short_name": "過去問",
+  "description": "大学ごとの過去問の傾向を、単元と細目の出題頻度でまとめるアプリ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E5E5E5",
+  "theme_color": "#E5E5E5",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
